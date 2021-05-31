@@ -104,12 +104,35 @@ def find_glyph(value, renderer):
         orientation = 'reverse'
         value = value.replace('<', '')
     library = renderer.glyphs_library
-    glyphs = list(library.keys())
-    index = int(value)
-    glyph = glyphs[index]
+
+    abbreviations = {
+        '?': 'Unspecified',
+        '3': "3' Sticky Restriction Site",
+        '5': "5' Sticky Restriction Site",
+        'p': 'Promoter',
+        'r': 'RibosomeEntrySite',
+        'c': 'CDS',
+        'g': 'CDS', # TODO: for pigeon compatability, this should be the variant arrow (rather than pentagon) glyph
+        # f is recognised by pigeon, but not this tool
+        't': 'Terminator',
+        's': 'Spacer',
+        'o': 'Operator',
+        '>': 'Recombination Site',
+        '<': 'Recombination Site' # TODO: should be in reverse orientation
+
+        # I don't know what |/x/x/d are meant to represent in Pigeon
+    }
+
+    if value in abbreviations:
+        glyph = abbreviations[value]
+    else:
+        glyphs = list(library.keys())
+        index = int(value)
+        glyph = glyphs[index]
+
     return glyph, orientation
 
-
+  
 def find_color(value):
     """Finds glyph name from index.
 
