@@ -74,15 +74,26 @@ def parse_string(string):
     string: str
         Input string containing construct details.
     """
-    partitions = string.split(',')
+    partitions = [p.strip() for p in string.split(',')]
     parts = []
     for partition in partitions:
-        values = partition.split(' ')
-        glyph, orientation = find_glyph(values[0], renderer)
-        color = find_color(values[1])
-        label = None
-        if len(values) == 3:
+        values = [v.strip() for v in partition.split(' ') if v.strip()]
+
+        if len(values) == 0:
+            continue
+        elif len(values) == 1:
+            glyph, orientation = find_glyph(values[0], renderer)
+            color = find_color('14')
+            label = None
+        elif len(values) == 2:
+            glyph, orientation = find_glyph(values[0], renderer)
+            color = find_color(values[1])
+            label = None
+        elif len(values) == 3:
+            glyph, orientation = find_glyph(values[0], renderer)
+            color = find_color(values[1])
             label = values[2]
+
         parts.append([glyph, orientation, color, label])
     return parts
 
