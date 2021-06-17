@@ -31,9 +31,12 @@ import click
 @click.option('--string', prompt='Enter your construct design', help='The shorthand string defining the construct you wish to draw.')
 @click.option('-r', '--rotation', default='', help='Rotation of the construct.')
 @click.option('-g', '--gapsize', default=3.0, help='Size of the distance between the parts.')
+@click.option('-s', '--save', default=0, help='Enable or disable diagram saving.')
+@click.option('-st', '--savetype', default='jpg', help='File extension of saved diagram (enable saving with -s 1).')
+@click.option('-sp', '--savepath', default='', help='Absolute path to save diagram to (enable saving with -s 1).')
 @click.option('-i', '--interaction', default='', help='interaction defined as starting "starting index,ending index,type,color". \
                                                         Can also receive a list of such interactions seperated by a double forward slash //.')
-def render_input(string, rotation, gapsize, interaction):
+def render_input(string, rotation, gapsize, interaction, save, savetype, savepath):
     """Renders a construct from an input string.
     
     Parameters
@@ -62,6 +65,11 @@ def render_input(string, rotation, gapsize, interaction):
     construct = psv.Construct(part_list, renderer, rotation=rotation, gapsize = gapsize, interaction_list = interaction)
     fig, ax, baseline_start, baseline_end, bounds = construct.draw()
     ax.plot([baseline_start[0], baseline_end[0]], [baseline_start[1], baseline_end[1]], color=(0,0,0), linewidth=1.5, zorder=0)
+    if save == 1:
+        filename = f'pSBOLv-cli-output.{savetype}'
+        if savepath != '':
+            filename = f'{savepath}/{filename}'
+        fig.savefig(filename, dpi=300)
     plt.show()
 
 
