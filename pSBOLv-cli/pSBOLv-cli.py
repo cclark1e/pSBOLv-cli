@@ -167,7 +167,7 @@ def find_color(value):
     Parameters
     ----------
     value: variable
-        Either int specifiying a preset colour
+        Either value specifiying a preset colour
         or tuple defining specific (r,g,b) colour.
     """
     if value is tuple:
@@ -186,7 +186,22 @@ def find_color(value):
                      '11':(255, 255, 102),
                      '12':(255, 204, 0),
                      '13':(140, 140, 140),
-                     '14':(0, 0, 0)}
+                     '14':(0, 0, 0),
+                     'blue1':(51, 204, 255),
+                     'blue2':(0, 0, 153),
+                     'green1':(0, 204, 102),
+                     'green2':(0, 102, 0),
+                     'red1':(255, 102, 102),
+                     'red2':(255, 0, 0),
+                     'orange1':(255, 153, 102),
+                     'orange2':(255, 153, 102),
+                     'pink1':(255, 153, 255),
+                     'pink2':(204, 0, 204),
+                     'yellow1':(255, 255, 102),
+                     'yellow2':(255, 204, 0),
+                     'grey':(140, 140, 140),
+                     'gray':(140, 140, 140),
+                     'black':(0, 0, 0)}
         value = colordict[value]
         value = (value[0]/255, value[1]/255, value[2]/255)
         return value
