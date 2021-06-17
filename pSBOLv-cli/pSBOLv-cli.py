@@ -120,9 +120,10 @@ def find_glyph(value, renderer):
         containing glyphs library attribute.
     """
     orientation = 'forward'
-    if value[0] == '<':
-        orientation = 'reverse'
-        value = value.replace('<', '')
+    if len(value) != 1:
+        if value[0] == '<' and (value[1] == ' ' or value[1] == ','):
+            orientation = 'reverse'
+            value = value.replace('<', '')
     library = renderer.glyphs_library
 
     abbreviations = {
@@ -140,10 +141,15 @@ def find_glyph(value, renderer):
         's': 'Spacer',
         'o': 'Operator',
         '>': 'Recombination Site',
-        '<': 'Recombination Site' # TODO: should be in reverse orientation
+        '<': 'Recombination Site'
 
         # I don't know what |/x/x/d are meant to represent in Pigeon
     }
+
+    if len(value) == 1 and value == '<':
+        orientation = 'reverse'
+    elif value[0] == '<' and (value[1] == ' ' or value[1] == ','):
+        orientation = 'reverse'
 
     if value in abbreviations:
         glyph = abbreviations[value]
