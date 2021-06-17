@@ -34,9 +34,11 @@ import click
 @click.option('-s', '--save', default=0, help='Enable or disable diagram saving.')
 @click.option('-st', '--savetype', default='jpg', help='File extension of saved diagram (enable saving with -s 1).')
 @click.option('-sp', '--savepath', default='', help='Absolute path to save diagram to (enable saving with -s 1).')
+@click.option('-f', '--fill', default=0.8, help='Value from 0-1 that determines the brightness of fills compared to the defined edge colour. \
+                                                  A value of 0 results in a white, rather than black, fill.')
 @click.option('-i', '--interaction', default='', help='interaction defined as starting "starting index,ending index,type,color". \
                                                         Can also receive a list of such interactions seperated by a double forward slash //.')
-def render_input(string, rotation, gapsize, interaction, save, savetype, savepath):
+def render_input(string, rotation, gapsize, interaction, save, savetype, savepath, fill):
     """Renders a construct from an input string.
     
     Parameters
@@ -53,7 +55,7 @@ def render_input(string, rotation, gapsize, interaction, save, savetype, savepat
         a single or multiple interactions.
     """
     parts = parse_string(string)
-    part_list = format_parts(parts, renderer)
+    part_list = format_parts(parts, renderer, fill)
     if rotation != '':
         rotation = safe_eval(rotation)
     else:
@@ -121,7 +123,7 @@ def find_glyph(value, renderer):
     """
     orientation = 'forward'
     if len(value) != 1:
-        if value[0] == '<' and (value[1] == ' ' or value[1] == ','):
+        if value[0] == '<' and (value[1] == ' ' or value[1] == ',' or value[1].isnumeric()):
             orientation = 'reverse'
             value = value.replace('<', '')
     library = renderer.glyphs_library
@@ -207,7 +209,7 @@ def find_color(value):
         return value
 
 
-def set_style_color(glyph, color, renderer):
+def set_style_color(glyph, color, renderer, fill):
     """Sets glyph path styles to specific colour.
 
     Parameters
@@ -231,11 +233,16 @@ def set_style_color(glyph, color, renderer):
             for key in style.keys():
                 if 'edge' in key:
                     color_style[key] = color
+                if 'facecolor' in key and 'un' not in path['class']:
+                    facecolor = (color[0]*fill, color[1]*fill, color[2]*fill)
+                    if fill == 0:
+                        facecolor = (1,1,1)
+                    color_style[key] = facecolor
             style_dict[path['id']] = color_style
     return style_dict
 
 
-def format_parts(part_list, renderer):
+def format_parts(part_list, renderer, fill):
     """Formats parts from parsed input string
        into values usable by paraSBOLv.
 
@@ -250,7 +257,7 @@ def format_parts(part_list, renderer):
     formatted_part_list = []
     for part in part_list:
         glyph, orientation, color, label = part[0], part[1], part[2], part[3]
-        style_dict = set_style_color(glyph, color, renderer)
+        style_dict = set_style_color(glyph, color, renderer, fill)
         if label is None:
             formatted_part = [glyph, {'orientation':orientation}, style_dict]
             formatted_part_list.append(formatted_part)
