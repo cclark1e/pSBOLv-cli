@@ -127,8 +127,10 @@ def find_glyph(value, renderer):
 
     abbreviations = {
         '?': 'Unspecified',
-        '3': "3' Overhang Site",
-        '5': "5' Overhang Site",
+        """3'""": "3' Overhang Site",
+        """5'""": "5' Overhang Site",
+        '3′': "3' Overhang Site",
+        '5′': "5' Overhang Site",
         'p': 'Promoter',
         'r': 'RibosomeEntrySite',
         'c': 'CDS',
