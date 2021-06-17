@@ -70,7 +70,8 @@ def render_input(string, rotation, gapsize, interaction, save, savetype, savepat
         if savepath != '':
             filename = f'{savepath}/{filename}'
         fig.savefig(filename, dpi=300)
-    plt.show()
+    else:
+        plt.show()
 
 
 def parse_string(string):
