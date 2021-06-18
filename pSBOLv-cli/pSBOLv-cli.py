@@ -2,24 +2,17 @@
 A tool to quickly visualse genetic
 constructs using shorthand notation.
 
-Some common part codes:
-
-CDS = 3
-Promoter = 25
-Ribosome Entry Site = 31
-Terminator = 43
-
 Example strings:
 
-25 1,25 2,3 3,3 5,43 6
+p 1, p 2,c 3, c 5, t 6
 
-25 3,25 10,3 3,25 10,31 3,3 10,3 3,43 10,<43 3,<3 10,<31 3,<25 10
+p 3,p 10,c 3,p 10,r 3,c 10,c 3,t 10,<t 3,<c 10,<r 3,<p 10
 
 Example interactions:
 
 -i 0,1,in,5
 
--i 1,3,co,10//6,7,de,4
+-i 1,3,pr,10//6,7,in,4
 """
 
 import parasbolv as psv
@@ -38,6 +31,7 @@ import click
                                                   A value of 0 results in a white, rather than black, fill.')
 @click.option('-i', '--interaction', default='', help='interaction defined as starting "starting index,ending index,type,color". \
                                                         Can also receive a list of such interactions seperated by a double forward slash //.')
+
 def render_input(string, rotation, gapsize, interaction, save, savetype, savepath, fill):
     """Renders a construct from an input string.
     
@@ -123,7 +117,7 @@ def find_glyph(value, renderer):
     """
     orientation = 'forward'
     if len(value) != 1:
-        if value[0] == '<' and (value[1] == ' ' or value[1] == ',' or value[1].isnumeric()):
+        if value[0] == '<' and (value[1] == ' ' or value[1] == ',' or value[1].isalpha()):
             orientation = 'reverse'
             value = value.replace('<', '')
     library = renderer.glyphs_library
